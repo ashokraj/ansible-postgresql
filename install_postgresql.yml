@@ -1,10 +1,9 @@
 ---
 - hosts: all
-  vars:
-     pgver: 9.5
- 
+  become: yes
+  
   tasks:
- 
+
   - name: Adding PGDG Repo
     yum_repository:
        name: pgdg-{{ pgver }}
@@ -12,22 +11,10 @@
        baseurl: ftp://ftp.mirrors.postgresql.org/pub/repos/yum/{{ pgver }}/redhat/rhel-$releasever-$basearch
        gpgcheck: no
        enabled: yes
-    become: yes
 
-  - name: Installing PostgreSQL
-    yum: name="postgresql{{ pgver | replace('.','') }}{{ item }}.x86_64" state=latest
+  - name: Installing Packages 
+    yum: name="{{ item  }}" state=present
     with_items:
-      - ""
-      - "-devel"
-      - "-contrib"
-      - "-libs"
-      - "-server"
-      - "-devel"
-      - "-plperl"
-      - "-plpython"
-      - "-python"
-    become: yes  
+       - "{{ packages }}"
 
-  - name: Installing Psycopg2
-    yum: name=python-psycopg2.x86_64 state=latest
-    become: yes
+  - include: install_pip.yml
