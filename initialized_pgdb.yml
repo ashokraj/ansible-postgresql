@@ -11,24 +11,11 @@
  
   - name: Postgres Initdb
     shell: source {{ ansible_env.HOME }}/.bash_profile && test -d {{ pgdd  }} || initdb -D {{ pgdd }}
-    notify:
-       - start postgres     
 
   - replace: dest={{ pgdd }}/postgresql.conf regexp='#*(unix_socket_directories *= *).*' replace="\1'/tmp'"
   - replace: dest={{ pgdd }}/postgresql.conf regexp='#*(listen_addresses *= *).*' replace="\1'*'"
   - replace: dest={{ pgdd }}/postgresql.conf regexp='#*(log_destination *= *).*' replace="\1'csvlog'"
   - lineinfile: dest={{ pgdd }}/pg_hba.conf  line="host    all             all             all                     trust"
-    notify: 
-       - reload postgres   
 
-  handlers:
-
-  - name: reload postgres
-    shell: source {{ ansible_env.HOME }}/.bash_profile && pg_ctl -D {{ pgdd }} reload
-    tags:
-      - reload postgres
-
-  - name: start postgres
+  - name: Starting PostgreSQL
     shell: source {{ ansible_env.HOME }}/.bash_profile && pg_ctl -D {{ pgdd }} start
-    tags:
-      - start postgres
