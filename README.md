@@ -13,5 +13,5 @@ git clone http://github.com/ashokraj/ansible-postgresql.git testapp
 cd testapp
 vagrant up 
 vagrant status 
-ansible-playbook -i .vagrant/provisioners/ansible/inventory/vagrant_ansible_inventory initialized_pgdb.yml`
+ansible-playbook -i .vagrant/provisioners/ansible/inventory/vagrant_ansible_inventory initialized_pgdb.yml
 ```
