@@ -9,8 +9,12 @@
   
   - lineinfile: dest="{{ ansible_env.HOME }}/.bash_profile" line="export PATH=$PATH:/usr/pgsql-{{ pgver }}/bin"
  
+  - find: paths={{ pgdd }} 
+    register: files
+ 
   - name: Postgres Initdb
-    shell: source {{ ansible_env.HOME }}/.bash_profile && test -d {{ pgdd  }} || initdb -D {{ pgdd }}
+    shell: source {{ ansible_env.HOME }}/.bash_profile && initdb -D {{ pgdd }}
+    when: files.matched|int == 0
 
   - replace: dest={{ pgdd }}/postgresql.conf regexp='#*(unix_socket_directories *= *).*' replace="\1'/tmp'"
   - replace: dest={{ pgdd }}/postgresql.conf regexp='#*(listen_addresses *= *).*' replace="\1'*'"
